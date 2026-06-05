@@ -31,6 +31,35 @@ kokonna --version
 kokonna device info --human
 ```
 
+## 一键复制给 Agent 的 Prompt
+
+把下面这段直接复制给 Codex、Hermes 或其他可以执行终端命令的 agent：
+
+```text
+请在这台机器上安装并验证 KoKonna 支持。
+
+请按步骤执行：
+1. 为当前项目安装 KoKonna agent skill：
+   npx skills add nixihz/kokonna-skill --skill kokonna --copy -y
+2. 验证 skill 是否可见：
+   npx skills list --json
+3. 安装 KoKonna Python CLI：
+   pipx install git+https://github.com/nixihz/kokonna-skill.git
+   如果没有 pipx，就使用 python -m pip install --user git+https://github.com/nixihz/kokonna-skill.git，并确保 kokonna 命令在 PATH 中。
+4. 验证 CLI：
+   kokonna --version
+   kokonna --help
+5. 检查是否已经配置 API Key：
+   kokonna config show
+6. 如果 api_key_masked 为空，向我索要 KoKonna 相框 API Key，然后保存：
+   kokonna config set-key <API_KEY>
+   最终回复里不要打印完整 API Key。
+7. 验证设备连通：
+   kokonna device info --human
+
+安装完成后，请总结安装了什么、skill 是否可见、CLI 是否可用、设备检查是否通过。
+```
+
 ## 安装 CLI
 
 从 GitHub 安装：

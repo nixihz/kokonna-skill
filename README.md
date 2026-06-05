@@ -38,6 +38,35 @@ kokonna --version
 kokonna device info --human
 ```
 
+## Copy-paste agent prompt
+
+Copy this into Codex, Hermes, or another terminal-capable coding agent:
+
+```text
+Please install and verify KoKonna support on this machine.
+
+Do these steps:
+1. Install the KoKonna agent skill for the current project:
+   npx skills add nixihz/kokonna-skill --skill kokonna --copy -y
+2. Verify it is visible:
+   npx skills list --json
+3. Install the KoKonna Python CLI:
+   pipx install git+https://github.com/nixihz/kokonna-skill.git
+   If pipx is missing, use python -m pip install --user git+https://github.com/nixihz/kokonna-skill.git and make sure the kokonna command is on PATH.
+4. Verify the CLI:
+   kokonna --version
+   kokonna --help
+5. Check whether an API key is already configured:
+   kokonna config show
+6. If api_key_masked is empty, ask me for my KoKonna Frame API key, then save it with:
+   kokonna config set-key <API_KEY>
+   Do not print the full API key in your final response.
+7. Verify the device:
+   kokonna device info --human
+
+After installation, summarize what was installed, whether the skill is visible, whether the CLI works, and whether the device check passed.
+```
+
 ## Install the CLI
 
 From GitHub:
