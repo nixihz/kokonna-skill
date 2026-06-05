@@ -7,7 +7,7 @@ description: Control a KoKonna e-ink photo frame via the OpenAPI. Use when the u
 
 Use this skill when the user wants to interact with a [KoKonna e-ink photo frame](https://kokonna.art) — uploading images, managing the gallery, switching what's displayed, or checking device status.
 
-The skill wraps the `kokonna` Python CLI installed in the same project (`/opt/case/opensource/kokonna-skill`). All commands require a device API key (Bearer token). **Always check whether the CLI is installed and configured before doing anything else.**
+This skill is only the agent workflow. The actual frame operations are performed by the `kokonna` Python CLI. All commands require a device API key (Bearer token). **Always check whether the CLI is installed and configured before doing anything else.**
 
 ## Setup
 
@@ -20,9 +20,9 @@ which kokonna && kokonna --version
 If missing, install it:
 
 ```bash
-cd /opt/case/opensource/kokonna-skill
-pipx install .          # recommended (isolated env)
-# or: pip install --user .
+pipx install git+https://github.com/nixihz/kokonna-skill.git
+# or from a local checkout:
+# pipx install .
 ```
 
 **Step 2 — verify the API key is configured:**

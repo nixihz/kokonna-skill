@@ -3,11 +3,50 @@
 CLI + Hermes skill for the [KoKonna](https://kokonna.art) e-ink photo frame OpenAPI. Lets you (or an AI agent) push images to a Frame, manage its gallery, query device status, and download stored images — all from the terminal.
 
 - **CLI source:** `kokonna/`
-- **Hermes skill:** `skill/SKILL.md` (install with `ln -s "$(pwd)/skill" ~/.hermes/skills/kokonna`)
+- **Agent skill:** `skill/SKILL.md` (install with `npx skills add nixihz/kokonna-skill --skill kokonna --copy -y`)
 - **API reference:** <https://kokonna.art/zh-hans/pages/openapi_cn>
 - **Chinese guide:** [docs/usage.zh-CN.md](docs/usage.zh-CN.md)
 
-## Install
+## What gets installed
+
+This project has two separate pieces:
+
+| Piece | Purpose | Install command |
+| --- | --- | --- |
+| Agent skill | Teaches Codex/Hermes-compatible agents when and how to use KoKonna | `npx skills add nixihz/kokonna-skill --skill kokonna --copy -y` |
+| Python CLI | Actually talks to the KoKonna OpenAPI and pushes images to the frame | `pipx install git+https://github.com/nixihz/kokonna-skill.git` |
+
+Installing the skill alone is enough for agent discovery, but it does **not**
+install the `kokonna` executable. To push images to the frame, install the CLI
+and configure the device API key too.
+
+## Quick start
+
+```bash
+# 1. Install the agent skill into the current project
+npx skills add nixihz/kokonna-skill --skill kokonna --copy -y
+
+# 2. Install the Python CLI
+pipx install git+https://github.com/nixihz/kokonna-skill.git
+
+# 3. Save the frame API key
+kokonna config set-key <API_KEY>
+
+# 4. Verify everything works
+npx skills list --json
+kokonna --version
+kokonna device info --human
+```
+
+## Install the CLI
+
+From GitHub:
+
+```bash
+pipx install git+https://github.com/nixihz/kokonna-skill.git
+```
+
+From a local checkout:
 
 ```bash
 # recommended: pipx (isolated env, easy to upgrade)
@@ -94,6 +133,9 @@ For local development, you can also install directly from the checkout:
 ```bash
 npx skills add . --skill kokonna --copy -y
 ```
+
+After installing or updating skills in a running gateway/session, reload that
+session if it does not pick up the new skill automatically.
 
 ## Develop
 

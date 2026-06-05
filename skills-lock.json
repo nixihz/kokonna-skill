@@ -4,7 +4,7 @@
     "kokonna": {
       "source": "/opt/case/opensource/kokonna-skill",
       "sourceType": "local",
-      "computedHash": "8fe8820299ab70efede3c2329524c4730b24d83002ce738abf11651d64aad895"
+      "computedHash": "d26debc57f2eec566450596294eac2d0131b681023b0532ee53cb2d87c24851d"
     }
   }
 }

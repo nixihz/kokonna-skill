@@ -2,7 +2,44 @@
 
 本文档说明如何安装、配置和使用 `kokonna` 命令行工具来管理 KoKonna 墨水屏相框。
 
-## 安装
+## 安装内容说明
+
+这个仓库包含两个不同部分：
+
+| 部分 | 作用 | 安装命令 |
+| --- | --- | --- |
+| Agent skill | 让 Codex/Hermes 兼容的 agent 知道什么时候以及如何使用 KoKonna | `npx skills add nixihz/kokonna-skill --skill kokonna --copy -y` |
+| Python CLI | 真正调用 KoKonna OpenAPI，把图片推送到相框 | `pipx install git+https://github.com/nixihz/kokonna-skill.git` |
+
+只安装 skill 只能让 agent 识别流程，不会安装 `kokonna` 命令。如果要真正操作相框，还需要安装 Python CLI 并配置设备 API Key。
+
+## 快速开始
+
+```bash
+# 1. 安装 agent skill 到当前项目
+npx skills add nixihz/kokonna-skill --skill kokonna --copy -y
+
+# 2. 安装 Python CLI
+pipx install git+https://github.com/nixihz/kokonna-skill.git
+
+# 3. 保存相框 API Key
+kokonna config set-key <API_KEY>
+
+# 4. 验证安装
+npx skills list --json
+kokonna --version
+kokonna device info --human
+```
+
+## 安装 CLI
+
+从 GitHub 安装：
+
+```bash
+pipx install git+https://github.com/nixihz/kokonna-skill.git
+```
+
+从本地仓库安装：
 
 推荐使用 `pipx` 安装，便于隔离依赖和后续升级：
 
@@ -123,6 +160,8 @@ npx skills add nixihz/kokonna-skill --skill kokonna --copy -g -y
 ```bash
 npx skills add . --skill kokonna --copy -y
 ```
+
+如果是在已经运行的 Telegram/Gateway 会话里刚安装或更新 skill，会话可能需要重新加载 skills 后才能稳定触发。
 
 ## 安全说明
 
