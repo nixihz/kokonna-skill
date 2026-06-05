@@ -5,7 +5,7 @@ CLI + Hermes skill for the [KoKonna](https://kokonna.art) e-ink photo frame Open
 - **CLI source:** `kokonna/`
 - **Agent skill:** `skill/SKILL.md` (install with `npx skills add nixihz/kokonna-skill --skill kokonna --copy -y`)
 - **API reference:** <https://kokonna.art/zh-hans/pages/openapi_cn>
-- **Chinese guide:** [docs/usage.zh-CN.md](docs/usage.zh-CN.md)
+- **中文文档:** [docs/usage.zh-CN.md](docs/usage.zh-CN.md)
 
 ## What gets installed
 
