@@ -2,10 +2,9 @@
   "version": 1,
   "skills": {
     "kokonna": {
-      "source": "nixihz/kokonna-skill",
-      "sourceType": "github",
-      "skillPath": "skill/SKILL.md",
-      "computedHash": "46fb9293577b17b117a18793873a4e273f798756dcd9a6c66e5ce3b35a1c82dc"
+      "source": "/opt/case/opensource/kokonna-skill",
+      "sourceType": "local",
+      "computedHash": "8fe8820299ab70efede3c2329524c4730b24d83002ce738abf11651d64aad895"
     }
   }
 }

@@ -36,7 +36,7 @@ If `api_key_masked` is `(empty)`, prompt the user to provide their device API ke
 ```bash
 kokonna config set-key <API_KEY>
 # or one-off:
-KOKONNA_API_KEY=<API_KEY> kokonna device info
+KOKONNA_API_KEY=*** kokonna device info
 ```
 
 **Step 3 — sanity-check the device is reachable:**
@@ -46,6 +46,23 @@ kokonna device info --human
 ```
 
 If this returns an auth error, the key is wrong. If it returns "Too many requests", wait a minute and retry (limit: 20 req/min per device).
+
+**Step 4 — confirm the physical mount orientation before generating/uploading images.** This is the #1 source of bad-looking frames.
+
+`screenWidth` / `screenHeight` / `screenRotate` describe the **LCD panel**, not what the user sees. The visible area is the panel rotated by `screenRotate`. Known setup: `800×480` panel with `screenRotate: 270`, mounted vertically → effective display `480×800` (3:5 portrait). The device auto-crops uploaded images to this visible area, and the result is brutal — a 16:9 landscape photo on a portrait frame becomes a center slice.
+
+**Always ask the user how the frame is physically mounted (horizontal / vertical) before generating an image for it.** Do not infer from `screenRotate` alone — confirm the mount.
+
+`mmx` aspect-ratio cheat sheet (mmx does NOT support the frame's native 5:3):
+
+| Frame mounted     | Effective display | Generate at | Why                              |
+| ----------------- | ----------------- | ----------- | -------------------------------- |
+| Vertical/portrait | 480×800 (3:5)     | `9:16`      | Closest to 3:5 (off by ~6%)      |
+| Vertical/portrait | 480×800 (3:5)     | `2:3`       | Backup if 9:16 unavailable       |
+| Horizontal        | 800×480 (5:3)     | `16:9`      | Closest to 5:3 (off by ~6%)      |
+| Horizontal        | 800×480 (5:3)     | `3:2`       | Backup                           |
+
+The device auto-crops, so off-ratio uploads are tolerable — but matching the **orientation** (portrait vs landscape) is non-negotiable.
 
 ## When to use which command
 
@@ -61,10 +78,11 @@ If this returns an auth error, the key is wrong. If it returns "Too many request
 
 For an end-to-end "generate → push to frame" workflow, the typical sequence is:
 
-1. Generate / obtain an image file locally (PNG or JPEG, ideally matching the frame's `screenWidth` × `screenHeight` ratio from `device info`).
-2. `kokonna image upload <file>` — the device auto-switches to the new image; response includes `id` and the new `counter`.
-3. Optionally `kokonna image list --human` to confirm and capture the new id.
-4. For a daily rotation, upload in the morning and use `display-by-name` later in the day if needed.
+1. Confirm the frame's physical mount (vertical / horizontal) with the user.
+2. Generate / obtain an image file locally (PNG or JPEG) at the matching aspect ratio: `9:16` for portrait frames, `16:9` for landscape.
+3. `kokonna image upload <file>` — the device auto-switches to the new image; response includes `id` and the new `counter`.
+4. Optionally `kokonna image list --human` to confirm and capture the new id.
+5. For a daily rotation, upload in the morning and use `display-by-name` later in the day if needed.
 
 ## Important rules
 
@@ -80,11 +98,11 @@ For an end-to-end "generate → push to frame" workflow, the typical sequence is
 **Pipeline a freshly-generated image straight to the frame:**
 
 ```bash
-# 1. generate (example: an image-gen CLI writing to ./out.png)
-image-gen --prompt "..." --output ./out.png
+# 1. generate (use 9:16 for portrait, 16:9 for landscape)
+mmx image generate --prompt "..." --aspect-ratio 9:16 --out-dir /tmp --out-prefix frame
 
 # 2. upload + display in one step
-kokonna image upload ./out.png
+kokonna image upload /tmp/frame_001.jpg
 ```
 
 **Build a status dashboard:**
@@ -113,6 +131,18 @@ The CLI exits non-zero on errors and prints a short message to stderr. Most comm
 - `error: Too many requests, please try again later.` — back off and retry after ~60s.
 
 When the CLI exits with an error, surface the message to the user plainly — don't try to parse the JSON body manually.
+
+## Pitfalls
+
+- **Generated image looks cropped/weird on the frame?** Wrong orientation. The most common cause is generating 16:9 landscape for a vertically-mounted frame — the device auto-crops to a thin center slice. Regenerate at 9:16 and re-upload.
+- **`mmx` rejects `5:3` (or any non-listed ratio).** Valid set: `1:1 16:9 4:3 3:2 2:3 3:4 9:16 21:9`. Don't retry the same ratio — pick the closest valid one for the frame's mount orientation.
+- **Upload returned 200 but frame still shows the old image.** E-ink refresh is slow; `synced` flips `false` → `true` after ~30–60s. Don't re-upload — wait and re-check with `kokonna device info`.
+- **`can not find robot <key>` from `device info`** usually means the API key was reset on the Frame. Confirm with the user, then `kokonna config set-key <NEW_KEY>`.
+- **Deleting the currently-displayed image** auto-switches to the next available one. The response's `imageId` is the new active id (or `null` if none remain). Don't be alarmed.
+- **Download endpoint (`image download`) puts the API key in the URL path**, not the `Authorization` header. The CLI handles this correctly; do not try to construct the URL manually and pass the key in `Authorization`.
+- **20 req/min per device.** If you're batch-uploading many images, pause ~3s between calls or the API starts returning 429.
+- **`display-by-name` is case-sensitive and exact.** `photo.jpg` won't match `Photo.JPG` or `photo.jpg ` (with trailing space). List the gallery first to get the exact name.
+- **Stale uploads in the gallery** (e.g. an earlier wrong-orientation image) stay on the device and consume space. Use `kokonna image delete <id>` to clean up after replacing them.
 
 ## Files
 
