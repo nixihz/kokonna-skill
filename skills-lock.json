@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "skills": {
+    "kokonna": {
+      "source": "nixihz/kokonna-skill",
+      "sourceType": "github",
+      "skillPath": "skill/SKILL.md",
+      "computedHash": "46fb9293577b17b117a18793873a4e273f798756dcd9a6c66e5ce3b35a1c82dc"
+    }
+  }
+}

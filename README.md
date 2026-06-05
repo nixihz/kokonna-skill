@@ -70,16 +70,29 @@ kokonna image upload ./out.png
 
 All commands exit non-zero on errors and print a short message to stderr (rate limit, auth failure, not found, etc.).
 
-## Install the Hermes skill
+## Install the skill
 
 ```bash
-ln -s "$(pwd)/skill" ~/.hermes/skills/kokonna
+npx skills add nixihz/kokonna-skill --skill kokonna --copy -y
 ```
 
-Then the skill is auto-discovered by Hermes. To uninstall:
+This installs the `kokonna` skill into the current project's agent skills
+directory. For a user-level install, add `-g`:
 
 ```bash
-rm ~/.hermes/skills/kokonna
+npx skills add nixihz/kokonna-skill --skill kokonna --copy -g -y
+```
+
+Then verify the install:
+
+```bash
+npx skills list --json
+```
+
+For local development, you can also install directly from the checkout:
+
+```bash
+npx skills add . --skill kokonna --copy -y
 ```
 
 ## Develop

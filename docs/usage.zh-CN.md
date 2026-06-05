@@ -98,18 +98,30 @@ kokonna image download 123 -o shot.jpg
 kokonna image delete 123
 ```
 
-## Hermes Skill 安装
+## Skill 安装
 
-将仓库中的 skill 目录链接到 Hermes skills 目录：
+推荐使用 `npx skills add` 安装：
 
 ```bash
-ln -s "$(pwd)/skill" ~/.hermes/skills/kokonna
+npx skills add nixihz/kokonna-skill --skill kokonna --copy -y
 ```
 
-卸载时删除该软链接：
+该命令会把 `kokonna` skill 安装到当前项目的 agent skills 目录。安装后可验证：
 
 ```bash
-rm ~/.hermes/skills/kokonna
+npx skills list --json
+```
+
+如果希望安装到用户级全局 skills 目录：
+
+```bash
+npx skills add nixihz/kokonna-skill --skill kokonna --copy -g -y
+```
+
+如果正在本地开发本仓库，也可以从当前目录安装：
+
+```bash
+npx skills add . --skill kokonna --copy -y
 ```
 
 ## 安全说明
